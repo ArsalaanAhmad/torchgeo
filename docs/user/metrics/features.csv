@@ -18,3 +18,4 @@ Library,ML Backend,I/O Backend,Spatial Backend,Transform Backend,Datasets,Weight
 `OTBTF`_,TensorFlow,"GDAL, OTB",-,-,0,0,✅,❌,✅,❌,❌
 `GeoDeep`_,ONNX,GDAL,-,-,0,7,✅,❌,✅,❌,❌
 `torchange`_,PyTorch,"Apache Arrow, skimage",-,Albumentations,8,8,❌,❌,❌,❌,✅
+`AIDE`_,"PyTorch, Detectron2",pillow,-,"torchvision, custom PyTorch modules",0,0,✅,✅,❌,❌,❌
