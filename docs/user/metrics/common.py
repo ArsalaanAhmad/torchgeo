@@ -22,6 +22,7 @@ index = [
     'OTBTF',
     'GeoDeep',
     'torchange',
+    'AIDE',
 ]
 
 # Sort by date of first commit (update_timeline.py)
