@@ -66,7 +66,7 @@ class TestLandslide4Sense:
         (root / 'TrainData' / 'img').mkdir(parents=True)
         (root / 'TrainData' / 'mask').mkdir(parents=True)
 
-        with pytest.raises(FileNotFoundError, match='No .h5 files found'):
+        with pytest.raises(FileNotFoundError, match=r'No \.h5 files found'):
             Landslide4Sense(root=root, split='train')
 
     def test_no_samples_found(self, monkeypatch: pytest.MonkeyPatch) -> None:
