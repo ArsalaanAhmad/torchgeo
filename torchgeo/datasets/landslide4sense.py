@@ -35,11 +35,15 @@ class Landslide4Sense(NonGeoDataset):
 
        In the public release, only the training split includes masks.
 
-     The public dataset can be downloaded from:
-     https://www.kaggle.com/datasets/tekbahadurkshetri/landslide4sense
+        The public dataset can be downloaded from:
+        https://www.kaggle.com/datasets/tekbahadurkshetri/landslide4sense
 
-     Secondary source:
-     https://github.com/iarai/Landslide4Sense-2022
+        Secondary source:
+        https://github.com/iarai/Landslide4Sense-2022/tree/2df4c378cfc4a0feedf197826e769da520100d81
+
+        Additional dependencies:
+
+        * ``h5py`` for reading the dataset files.
 
     If you use this dataset in your research, please cite it using the following
     format:
@@ -62,6 +66,8 @@ class Landslide4Sense(NonGeoDataset):
        }
 
     Furthermore, you can also cite the original dataset paper: https://arxiv.org/abs/2206.00515
+
+    .. versionadded:: 0.10
 
     """
 
@@ -92,7 +98,19 @@ class Landslide4Sense(NonGeoDataset):
         transforms: Callable[[Sample], Sample] | None = None,
         bands: Sequence[int] | None = None,
     ) -> None:
-        """Initialize a new Landslide4Sense dataset instance."""
+        """Initialize a new Landslide4Sense dataset instance.
+
+        Args:
+            root: Root directory where dataset files are stored.
+            split: Dataset split to load.
+            transforms: Transform function applied to each sample.
+            bands: Optional subset of band indices to load from each image.
+
+        Raises:
+            ValueError: If ``split`` is not one of the supported split names.
+            FileNotFoundError: If required split files cannot be found.
+
+        """
         lazy_import('h5py')
 
         if split not in self.splits:
@@ -162,7 +180,16 @@ class Landslide4Sense(NonGeoDataset):
         return len(self.samples)
 
     def __getitem__(self, index: int) -> Sample:
-        """Return a single sample from the dataset."""
+        """Return a single sample from the dataset.
+
+        Args:
+            index: Index of the sample to retrieve.
+
+        Returns:
+            A sample dictionary containing an ``image`` tensor and, for the
+            training split, a ``mask`` tensor.
+
+        """
         h5py = lazy_import('h5py')
 
         image_path, mask_path = self.samples[index]
@@ -197,7 +224,18 @@ class Landslide4Sense(NonGeoDataset):
     def plot(
         self, sample: Sample, show_titles: bool = True, suptitle: str | None = None
     ) -> Figure:
-        """Plot a sample from the dataset."""
+        """Plot a sample from the dataset.
+
+        Args:
+            sample: Sample dictionary containing ``image`` and optional ``mask``
+                and ``prediction`` tensors.
+            show_titles: If ``True``, show subplot titles.
+            suptitle: Optional overall figure title.
+
+        Returns:
+            The matplotlib figure containing the rendered sample.
+
+        """
         if self.bands is None:
             available_band_indices = list(range(len(self.band_names)))
         else:
