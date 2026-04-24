@@ -7,8 +7,6 @@ version: 2
 # Set the version of Python
 build:
   os: ubuntu-lts-latest
-  apt_packages:
-    - pandoc
   tools:
     python: '3.14'
   jobs:
