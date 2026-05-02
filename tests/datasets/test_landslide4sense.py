@@ -31,6 +31,7 @@ class TestLandslide4Sense:
 
         assert sample['image'].shape == (14, 32, 32)
         assert sample['mask'].shape == (1, 32, 32)
+        assert sample['mask'].dtype == torch.int64
 
     def test_len_train(self, dataset: Landslide4Sense) -> None:
         assert len(dataset) == 2

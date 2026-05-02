@@ -39,7 +39,7 @@ class Landslide4Sense(NonGeoDataset):
         https://www.kaggle.com/datasets/tekbahadurkshetri/landslide4sense
 
         Secondary source:
-        https://github.com/iarai/Landslide4Sense-2022/tree/2df4c378cfc4a0feedf197826e769da520100d81
+        https://github.com/iarai/Landslide4Sense-2022/tree/main
 
         Additional dependencies:
 
@@ -48,26 +48,10 @@ class Landslide4Sense(NonGeoDataset):
     If you use this dataset in your research, please cite it using the following
     format:
 
-    .. code-block:: bibtex
+    
+    you can also cite the original dataset paper: https://arxiv.org/abs/2206.00515
 
-       @article{L4S-2022,
-         author={Ghorbanzadeh, Omid and Xu, Yonghao and Zhao, Hengwei and Wang,
-         Junjue and Zhong, Yanfei and Zhao, Dong and Zang, Qi and Wang, Shuang and
-         Zhang, Fahong and Shi, Yilei and Zhu, Xiao Xiang and Bai, Lin and Li,
-         Weile and Peng, Weihang and Ghamisi, Pedram},
-         journal={IEEE Journal of Selected Topics in Applied Earth Observations and
-         Remote Sensing},
-         title={The Outcome of the 2022 Landslide4Sense Competition: Advanced
-         Landslide Detection From Multisource Satellite Imagery},
-         year={2022},
-         volume={15},
-         pages={9927-9942},
-         doi={10.1109/JSTARS.2022.3220845}
-       }
-
-    Furthermore, you can also cite the original dataset paper: https://arxiv.org/abs/2206.00515
-
-    .. versionadded:: 0.10
+    .. versionadded:: 0.10.0
 
     """
 
@@ -121,11 +105,6 @@ class Landslide4Sense(NonGeoDataset):
         self.transforms = transforms
         self.bands = bands
         self.samples = self._load_samples()
-
-        if len(self.samples) == 0:
-            raise FileNotFoundError(
-                f"No samples found for split='{split}' under root='{self.root}'."
-            )
 
     def _split_dirs(self) -> tuple[Path, Path | None]:
         """Return image and mask directories for the selected split."""
@@ -197,9 +176,6 @@ class Landslide4Sense(NonGeoDataset):
         with h5py.File(image_path, 'r') as f:
             image = f['img'][:]
 
-        if image.ndim != 3:
-            raise ValueError(f'Expected image with 3 dims, got shape {image.shape}')
-
         image = np.transpose(image, (2, 0, 1))
 
         if self.bands is not None:
@@ -211,10 +187,7 @@ class Landslide4Sense(NonGeoDataset):
             with h5py.File(mask_path, 'r') as f:
                 mask = f['mask'][:]
 
-            if mask.ndim != 2:
-                raise ValueError(f'Expected mask with 2 dims, got shape {mask.shape}')
-
-            sample['mask'] = torch.from_numpy(mask).unsqueeze(0).float()
+            sample['mask'] = torch.from_numpy(mask).unsqueeze(0).long()
 
         if self.transforms is not None:
             sample = self.transforms(sample)
