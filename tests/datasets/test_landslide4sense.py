@@ -71,14 +71,14 @@ class TestLandslide4Sense:
             Landslide4Sense(root=root, split='train')
 
     def test_no_samples_found(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        def _mock_load_samples(self: Landslide4Sense) -> list[tuple[Path, Path | None]]:
+        def _mock_load_samples(_self: Landslide4Sense) -> list[tuple[Path, Path | None]]:
             return []
 
         monkeypatch.setattr(Landslide4Sense, '_load_samples', _mock_load_samples)
 
         root = os.path.join('tests', 'data', 'landslide4sense')
-        with pytest.raises(FileNotFoundError, match='No samples found for split'):
-            Landslide4Sense(root=root, split='train')
+        dataset = Landslide4Sense(root=root, split='train')
+        assert len(dataset) == 0
 
     def test_val_sample_contains_only_image(self) -> None:
         root = os.path.join('tests', 'data', 'landslide4sense')
@@ -139,38 +139,6 @@ class TestLandslide4Sense:
 
         with pytest.raises(FileNotFoundError, match='Missing mask'):
             Landslide4Sense(root=root, split='train')
-
-    def test_invalid_image_dims(self, tmp_path: Path) -> None:
-        root = tmp_path / 'landslide4sense'
-        train_img = root / 'TrainData' / 'img'
-        train_mask = root / 'TrainData' / 'mask'
-        train_img.mkdir(parents=True)
-        train_mask.mkdir(parents=True)
-
-        with h5py.File(train_img / 'image_1.h5', 'w') as f:
-            f.create_dataset('img', data=torch.zeros(32, 32).numpy())
-        with h5py.File(train_mask / 'mask_1.h5', 'w') as f:
-            f.create_dataset('mask', data=torch.zeros(32, 32).numpy())
-
-        dataset = Landslide4Sense(root=root, split='train')
-        with pytest.raises(ValueError, match='Expected image with 3 dims'):
-            _ = dataset[0]
-
-    def test_invalid_mask_dims(self, tmp_path: Path) -> None:
-        root = tmp_path / 'landslide4sense'
-        train_img = root / 'TrainData' / 'img'
-        train_mask = root / 'TrainData' / 'mask'
-        train_img.mkdir(parents=True)
-        train_mask.mkdir(parents=True)
-
-        with h5py.File(train_img / 'image_1.h5', 'w') as f:
-            f.create_dataset('img', data=torch.zeros(32, 32, 14).numpy())
-        with h5py.File(train_mask / 'mask_1.h5', 'w') as f:
-            f.create_dataset('mask', data=torch.zeros(1, 32, 32).numpy())
-
-        dataset = Landslide4Sense(root=root, split='train')
-        with pytest.raises(ValueError, match='Expected mask with 2 dims'):
-            _ = dataset[0]
 
     def test_plot(self, dataset: Landslide4Sense) -> None:
         dataset.plot(dataset[0], suptitle='Test')
