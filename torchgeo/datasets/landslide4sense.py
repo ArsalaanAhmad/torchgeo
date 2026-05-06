@@ -48,7 +48,7 @@ class Landslide4Sense(NonGeoDataset):
     If you use this dataset in your research, please cite it using the following
     format:
 
-    
+
     you can also cite the original dataset paper: https://arxiv.org/abs/2206.00515
 
     .. versionadded:: 0.10.0

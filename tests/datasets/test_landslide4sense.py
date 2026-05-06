@@ -71,7 +71,9 @@ class TestLandslide4Sense:
             Landslide4Sense(root=root, split='train')
 
     def test_no_samples_found(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        def _mock_load_samples(_self: Landslide4Sense) -> list[tuple[Path, Path | None]]:
+        def _mock_load_samples(
+            _self: Landslide4Sense,
+        ) -> list[tuple[Path, Path | None]]:
             return []
 
         monkeypatch.setattr(Landslide4Sense, '_load_samples', _mock_load_samples)
